@@ -338,8 +338,38 @@ def test_accuracy(model: nn.Module, loaders: dict[str, DataLoader]):
             n += len(yb)
     return correct / n
 
-# Step 11 - save_model (not yet solved)
-# TODO: implement
+# Step 11 - save_model
+def save_model(model: MLP, path: str):
+    '''torch.save({'state_dict': ..., 'config': {'hidden1', 'hidden2', 'n_classes'}}, path)'''
+
+    torch.save(
+        {
+            'state_dict': model.state_dict(),
+            'config': {
+                'hidden1': model.fc1.bias.shape[0],
+                'hidden2': model.fc2.bias.shape[0],
+                'n_classes': model.out.bias.shape[0],
+            },
+        },
+        path,
+    )
+
+
+def load_model(path: str):
+    '''rebuild MLP from the config, load the state dict, eval(), return it.'''
+
+    p = torch.load(path)
+    state_dict = p['state_dict']
+    config = p['config']
+    hidden1 = config['hidden1']
+    hidden2 = config['hidden2']
+    n_classes = config['n_classes']
+
+    model = MLP(hidden1, hidden2, n_classes)
+    model.load_state_dict(state_dict)
+    model.eval()
+
+    return model
 
 # Step 12 - predict_classes (not yet solved)
 # TODO: implement
