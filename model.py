@@ -322,8 +322,21 @@ def random_search(
         'best': best,
     }
 
-# Step 10 - test_accuracy (not yet solved)
-# TODO: implement
+# Step 10 - test_accuracy
+def test_accuracy(model: nn.Module, loaders: dict[str, DataLoader]):
+    '''accuracy on loaders['test'] via evaluate.'''
+
+    test_loader = loaders['test']
+
+    model.eval()
+    correct = 0
+    n = 0
+    with torch.no_grad():
+        for xb, yb in test_loader:
+            logits: Tensor = model(xb)
+            correct += (logits.argmax(1) == yb).sum().item()
+            n += len(yb)
+    return correct / n
 
 # Step 11 - save_model (not yet solved)
 # TODO: implement
